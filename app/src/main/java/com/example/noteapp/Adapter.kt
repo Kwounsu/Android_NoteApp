@@ -14,15 +14,24 @@ class Adapter(context: Context, private val dataSource: ArrayList<Note>): BaseAd
     ) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val listItemRowView = layoutInflater.inflate(
-            R.layout.note_list_item, parent, false)
 
-        val recipe = getItem(position)
+        val note = getItem(position)
+        val viewHolder : ViewHolder
+        val listItemRowView : View
 
-        listItemRowView.findViewById<TextView>(
-            R.id.note_title_txt).text = recipe.mNoteTitle
-        listItemRowView.findViewById<TextView>(
-            R.id.note_detail_txt).text = recipe.mNoteDetail
+        if (convertView == null) {
+            listItemRowView = layoutInflater.inflate(R.layout.note_list_item, parent, false)
+            viewHolder = ViewHolder()
+            viewHolder.noteTitle = listItemRowView.findViewById(R.id.note_title_txt)
+            viewHolder.noteDetail = listItemRowView.findViewById(R.id.note_detail_txt)
+            listItemRowView.tag = viewHolder
+        } else {
+            listItemRowView = convertView
+            viewHolder = listItemRowView.tag as ViewHolder
+        }
+
+        viewHolder.noteTitle.text = note.mNoteTitle
+        viewHolder.noteDetail.text = note.mNoteDetail
 
         return listItemRowView
     }
@@ -37,6 +46,11 @@ class Adapter(context: Context, private val dataSource: ArrayList<Note>): BaseAd
 
     override fun getCount(): Int {
         return dataSource.size
+    }
+
+    private class ViewHolder {
+        lateinit var noteTitle : TextView
+        lateinit var noteDetail : TextView
     }
 
 }
